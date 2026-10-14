@@ -11,6 +11,10 @@ jobs:
     name: Code Quality & Syntax Verification
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: cyber-grid
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -21,18 +25,18 @@ jobs:
           node-version: 20.x
 
       - name: Install Dependencies
-        run: cyber-grid/npm install
+        run: npm install
 
       - name: Run Syntax & Module Verification
-        run: cyber-grid/npm test
+        run: npm test
 
       - name: Verify Frontend Assets
         run: |
-          test -f cyber-grid/public/index.html || exit 1
-          test -f cyber-grid/public/css/style.css || exit 1
-          test -f cyber-grid/public/js/app.js || exit 1
-          test -f cyber-grid/public/js/canvas.js || exit 1
-          test -f cyber-grid/public/js/socket.js || exit 1
+          test -f public/index.html || exit 1
+          test -f public/css/style.css || exit 1
+          test -f public/js/app.js || exit 1
+          test -f public/js/canvas.js || exit 1
+          test -f public/js/socket.js || exit 1
           echo "All frontend static assets verified."
 
       - name: CI Success Banner
