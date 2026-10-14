@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CYBER-GRID</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div id="loginModal" class="modal-overlay">
+    <div class="terminal-card glass-panel">
+      <div class="card-header">
+        <span class="dot red"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+        <span class="terminal-title">AUTH_GATEWAY</span>
+      </div>
+      <div class="card-body">
+        <h1 class="glitch-title" data-text="CYBER-GRID">CYBER-GRID</h1>
+        <p class="subtitle">> 4-RUNNER DISTRIBUTED CONQUEST</p>
+
+        <form id="loginForm">
+          <div class="input-group">
+            <label for="runnerName">> ENTER RUNNER ALIAS:</label>
+            <input type="text" id="runnerName" maxlength="16" placeholder="ex. ZeroCool" required autocomplete="off" autofocus>
+          </div>
+
+          <div class="input-group">
+            <label>> SELECT BASE PROTOCOL (COLOR):</label>
+            <div class="color-picker-grid" style="grid-template-columns: repeat(4, 1fr);">
+              <label class="color-choice">
+                <input type="radio" name="factionColor" value="#00ffcc" checked>
+                <span class="color-swatch" style="--c: #00ffcc;">CYAN</span>
+              </label>
+              <label class="color-choice">
+                <input type="radio" name="factionColor" value="#ff0055">
+                <span class="color-swatch" style="--c: #ff0055;">CRIMSON</span>
+              </label>
+              <label class="color-choice">
+                <input type="radio" name="factionColor" value="#39ff14">
+                <span class="color-swatch" style="--c: #39ff14;">ACID</span>
+              </label>
+              <label class="color-choice">
+                <input type="radio" name="factionColor" value="#b026ff">
+                <span class="color-swatch" style="--c: #b026ff;">PURPLE</span>
+              </label>
+            </div>
+          </div>
+
+          <button type="button" id="connectBtn" class="cyber-btn primary">
+            <span>[ INITIATE LINK ]</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="gameContainer" class="game-layout hidden">
+    
+    <header class="hud-top glass-panel">
+      <div id="playerProfileBadge" class="hud-profile">
+        <span class="profile-label">RUNNER:</span>
+        <span id="myRunnerName" class="profile-name">---</span>
+        <span class="profile-faction">
+          <span id="myColorDot" class="color-dot"></span>
+          <span id="myColorName">---</span>
+        </span>
+      </div>
+
+      <div class="hud-brand">
+        <span class="logo-text">CYBER-GRID</span>
+        <span class="version-tag">OCC_ENGINE // ACID</span>
+      </div>
+
+      <div class="hud-network">
+        <span id="connectionBadge" class="status-badge online">
+          <span class="pulse-dot"></span>
+          <span id="connectionStatusText">SYS_ONLINE</span>
+        </span>
+      </div>
+
+      <div class="hud-energy">
+        <div class="energy-labels">
+          <span class="energy-title">CPU POOL</span>
+          <span id="energyValueText" class="energy-val">100 / 100</span>
+        </div>
+        <div class="energy-bar-track">
+          <div id="energyBarFill" class="energy-bar-fill" style="width: 100%;"></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="hud-workspace">
+      
+      <div class="canvas-wrapper glass-panel">
+        <canvas id="gridCanvas" width="1000" height="600"></canvas>
+        
+        <div id="glitchFlashOverlay" class="glitch-overlay"></div>
+
+        <div class="action-mode-bar">
+          <button type="button" class="mode-btn active" data-mode="ATTACK">
+            <span class="mode-icon">⚔️</span>
+            <span>ATTACK (-20 CPU)</span>
+          </button>
+          <button type="button" class="mode-btn" data-mode="REPAIR">
+            <span class="mode-icon">🔧</span>
+            <span>REPAIR NODE (-15 CPU)</span>
+          </button>
+          <button type="button" class="mode-btn" data-mode="UPGRADE">
+            <span class="mode-icon">🛡️</span>
+            <span>UPGRADE SHIELD (-35 CPU)</span>
+          </button>
+        </div>
+
+        <div class="canvas-legend">
+          <span>CONNECTIVITY: <strong style="color: #00ffcc;">ATTACK ONLY ADJACENT ONES</strong></span>
+          <span>POINT CAPTURE: <strong style="color: #39ff14;">+15 to Max CPU</strong></span>
+          <span>TARGET: <strong style="color: #ffd700;">CORE (150 POINTS) OR DESTROY HQ</strong></span>
+        </div>
+      </div>
+
+      <aside class="sidebar-wrapper">
+        <div class="glass-panel leaderboard-panel">
+          <div class="panel-header">
+            <h3>> RUNNER LEADERBOARD</h3>
+          </div>
+          <ul id="leaderboardList" class="leaderboard-list"></ul>
+        </div>
+        <div class="glass-panel queue-panel">
+          <div class="panel-header">
+            <h3>> MATCH PROTOCOL</h3>
+          </div>
+          <div class="queue-body">
+            <div id="queueStatusText" class="queue-status">> STATUS: LIVE MATCH</div>
+            <div class="queue-list-label">> SPECTATOR QUEUE:</div>
+            <ul id="spectatorQueueList" class="spectator-list">
+              <li class="queue-empty">[ NO SPECTATORS IN QUEUE ]</li>
+            </ul>
+          </div>
+        </div>
+        <div class="glass-panel logs-panel">
+          <div class="panel-header">
+            <h3>> SYSTEM EVENT STREAM</h3>
+          </div>
+          <div id="systemLogs" class="system-logs-stream">
+            <div class="log-entry system">> Terminal initialized. Listening to WS bus...</div>
+          </div>
+        </div>
+      </aside>
+
+    </main>
+
+  </div>
+
+  <div id="victoryModal" class="modal-overlay hidden">
+    <div class="terminal-card glass-panel text-center">
+      <h2 id="victoryTitle" class="glitch-title">GRID DOMINATION ACHIEVED</h2>
+      <p id="victorySubtitle">> WINNER ESTABLISHED</p>
+      <div id="winnerBadge" class="winner-display"></div>
+      <p class="restart-timer">> Next match initiating in <span id="countdownSec">7</span>s...</p>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

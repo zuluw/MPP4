@@ -1,0 +1,15 @@
+{
+  "name": "cyber-grid",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node --watch server/server.js",
+    "test": "node --check server/server.js server/gameLogic.js server/logger.js server/db/db.js"
+  },
+  "dependencies": {
+    "pg": "^8.11.5",
+    "winston": "^3.19.0",
+    "ws": "^8.18.0"
+  }
+}
