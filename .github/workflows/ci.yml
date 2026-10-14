@@ -21,18 +21,18 @@ jobs:
           node-version: 20.x
 
       - name: Install Dependencies
-        run: npm install
+        run: cyber-grid/npm install
 
       - name: Run Syntax & Module Verification
-        run: npm test
+        run: cyber-grid/npm test
 
       - name: Verify Frontend Assets
         run: |
-          test -f public/index.html || exit 1
-          test -f public/css/style.css || exit 1
-          test -f public/js/app.js || exit 1
-          test -f public/js/canvas.js || exit 1
-          test -f public/js/socket.js || exit 1
+          test -f cyber-grid/public/index.html || exit 1
+          test -f cyber-grid/public/css/style.css || exit 1
+          test -f cyber-grid/public/js/app.js || exit 1
+          test -f cyber-grid/public/js/canvas.js || exit 1
+          test -f cyber-grid/public/js/socket.js || exit 1
           echo "All frontend static assets verified."
 
       - name: CI Success Banner
