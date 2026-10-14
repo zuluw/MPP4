@@ -199,18 +199,21 @@ wss.on("connection", (ws) => {
 
           const playerId = "user_" + cleanName.toLowerCase();
 
-          const isAlreadyOnline = Array.from(clients.values()).some(
-            (c) => c.id === playerId && c.isAlive,
+          const existingEntry = Array.from(clients.entries()).find(
+            ([clientWs, c]) => c.id === playerId && clientWs !== ws,
           );
 
-          if (isAlreadyOnline) {
-            sendTo(ws, {
-              type: "AUTH_ERROR",
-              payload: {
-                message: `The username "${cleanName}" is already in use! Please choose another username.`,
-              },
-            });
-            break;
+          if (existingEntry) {
+            const [oldWs, oldData] = existingEntry;
+            logger.info(
+              "Stale session detected on reload. Transferring session to new tab...",
+              { name: cleanName },
+            );
+
+            if (oldData.color) color = oldData.color;
+
+            clients.delete(oldWs);
+            oldWs.terminate();
           }
 
           const activeRunners = Array.from(clients.values()).filter(
