@@ -43,9 +43,12 @@ const server = http.createServer((req, res) => {
         await query(
           "UPDATE nodes SET owner_id = NULL, level = 1, hp = max_hp, version = 1;",
         );
+
+        await ensureInitialWorld();
+
         res.writeHead(200, { "Content-Type": "text/html; charset=UTF-8" });
         res.end(
-          '<h1 style="color: green; font-family: sans-serif;">Cleared</h1>',
+          '<h1 style="color: green; font-family: sans-serif;">✅ БАЗА ДАННЫХ И КАРТА ВОССТАНОВЛЕНЫ!</h1><p><a href="/">Вернуться в игру</a></p>',
         );
       } catch (err) {
         res.writeHead(500, { "Content-Type": "text/plain" });
