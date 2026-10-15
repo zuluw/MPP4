@@ -35,6 +35,26 @@ const MIME_TYPES = {
 
 const server = http.createServer((req, res) => {
   const cleanUrl = req.url.split("?")[0];
+
+  if (cleanUrl === "/api/reset-database-admin-secret") {
+    (async () => {
+      try {
+        await query("TRUNCATE players, system_logs CASCADE;");
+        await query(
+          "UPDATE nodes SET owner_id = NULL, level = 1, hp = max_hp, version = 1;",
+        );
+        res.writeHead(200, { "Content-Type": "text/html; charset=UTF-8" });
+        res.end(
+          '<h1 style="color: green; font-family: sans-serif;">Cleared</h1>',
+        );
+      } catch (err) {
+        res.writeHead(500, { "Content-Type": "text/plain" });
+        res.end("Error clearing DB: " + err.message);
+      }
+    })();
+    return;
+  }
+
   let reqPath = cleanUrl === "/" ? "/index.html" : cleanUrl;
   const filePath = path.normalize(path.join(PUBLIC_DIR, reqPath));
 

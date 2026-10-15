@@ -84,12 +84,17 @@ function initApp() {
   });
 
   const cached = network.playerData;
-  if (cached) {
-    runnerNameInput.value = cached.name;
-    const colorRadio = document.querySelector(
-      `input[name="factionColor"][value="${cached.color}"]`,
-    );
-    if (colorRadio) colorRadio.checked = true;
+  if (cached && cached.name && cached.id) {
+    loginModal.classList.add('hidden');
+    gameContainer.classList.remove('hidden');
+
+    network.connect();
+    network.send('JOIN', cached);
+
+    startEnergyClientRegen();
+    addLogEntry('Session restored seamlessly after page refresh.', 'system');
+  } else {
+    network.connect();
   }
 
   const connectBtn = document.getElementById("connectBtn");

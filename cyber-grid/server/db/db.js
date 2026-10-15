@@ -13,15 +13,17 @@ const connectionString =
   process.env.DATABASE_URL ||
   "postgres://cyber_user:cyber_password@localhost:5432/cyber_grid_db";
 
+const isLocal =
+  connectionString.includes("localhost") ||
+  connectionString.includes("@db:") ||
+  connectionString.includes("127.0.0.1");
+
 export const pool = new Pool({
   connectionString,
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 5000,
-  ssl:
-    process.env.DATABASE_URL && !process.env.DATABASE_URL.includes("localhost")
-      ? { rejectUnauthorized: false }
-      : false,
+  ssl: isLocal ? false : { rejectUnauthorized: false },
 });
 
 export async function initDB(retries = 10, delay = 2000) {
