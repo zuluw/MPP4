@@ -84,6 +84,18 @@ export class NetworkManager {
     this.isExplicitlyClosed = false;
 
     this.playerData = this.loadCachedPlayer();
+
+    window.addEventListener('offline', () => {
+      this.handlers.onStatusChange('offline', 'SYS_OFFLINE');
+      if (this.ws) {
+        this.ws.close(); 
+      }
+    });
+
+    window.addEventListener('online', () => {
+      this.handlers.onStatusChange('reconnecting', 'NETWORK_DETECTED: SYNCING...');
+      this.connect();
+    });
   }
 
   loadCachedPlayer() {
